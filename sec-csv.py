@@ -1,6 +1,6 @@
 # Used to use split in map
 from code import compile_command
-from operator import methodcaller
+
 from typing import Tuple
 
 # Used to access content of URL
@@ -10,10 +10,6 @@ import json
 
 # Used to get uniform random sample
 from numpy import random as rd
-
-# To pause execution
-# At the moment not used
-import time 
 
 import csv
 
@@ -28,22 +24,21 @@ logging.getLogger("urllib3").setLevel(logging.CRITICAL)
 
 # How large is the sample?
 TOTAL_COMPANIES = sum(1 for line in open('ticker.txt'))
-NUMBER_OF_SAMPLES = 50
+NUMBER_OF_SAMPLES = 400
 
 # Pick random sample uniform over [0, TOTAL_COMPANIES - 1], since we are picking indices of lines
 samples = rd.randint(0, TOTAL_COMPANIES -1, NUMBER_OF_SAMPLES)
 
 # Store list of companies as a list with elements of the form ['name','identifier']
 lines_list_raw = map(str.strip, open('ticker.txt').readlines())
-lines_list = list(map(methodcaller('split', '\t'), lines_list_raw))
+lines_list = list(map(lambda line: line.split('\t'), lines_list_raw))
 
 # Generate list of identifies to read
 id_samples = [ lines_list[i][1] for i in samples]
 
 data_base = []
-my_list = id_samples
 
-for id in my_list:
+for id in id_samples:
     logging.debug('Checking ' + id.zfill(10))
     
     link_test = 'https://data.sec.gov/submissions/CIK{}.json'.format(id.zfill(10))
