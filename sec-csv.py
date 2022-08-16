@@ -14,7 +14,7 @@ def main():
 
     # How large is the sample?
     TOTAL_COMPANIES = sum(1 for line in open('ticker.txt'))
-    NUMBER_OF_SAMPLES = 400
+    NUMBER_OF_SAMPLES = 20
 
     # Pick random sample uniform over [0, TOTAL_COMPANIES - 1], since we are picking indices of lines.
     samples = rd.randint(0, TOTAL_COMPANIES -1, NUMBER_OF_SAMPLES)
@@ -34,14 +34,14 @@ def main():
     HDR = {'user-agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Mobile Safari/537.36'}
 
     for id in id_samples:
-        logging.debug('Checking ' + f'{id:010d}')
-        link = f'https://data.sec.gov/submissions/CIK{id:010d}.json'
+        logging.debug('Checking ' + f'{int(id):010d}')
+        link = f'https://data.sec.gov/submissions/CIK{int(id):010d}.json'
         # First link contains entityType key. 
         json_content = json.loads(requests.get(link, headers=HDR).content.decode('utf-8'))
 
         if json_content['entityType'] == 'operating':
             # Only look at operating entities.
-            link = f'https://data.sec.gov/api/xbrl/companyfacts/CIK{id:010d}.json'
+            link = f'https://data.sec.gov/api/xbrl/companyfacts/CIK{int(id):010d}.json'
             response = requests.get(link, headers=HDR)
             
             try:
